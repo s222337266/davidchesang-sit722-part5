@@ -3,10 +3,12 @@
 name: Build and deploy Python app to Azure Web App
 
 env:
-  AZURE_WEBAPP_NAME: bookapp  # set this to the name of your Azure Web App
-  PYTHON_VERSION: '3.8'              # set this to the Python version to use
+  AZURE_WEBAPP_NAME: bookapp  
+  PYTHON_VERSION: '3.8' 
   VERSION: 1
-
+  REGISTRY_NAME: bookapps222337266.azurecr.io  
+  RESOURCE_GROUP: davidrg1
+  AKS_CLUSTER_NAME: bookapp
 on:
   push:
     branches: [ "main" ]
@@ -48,9 +50,9 @@ jobs:
       - name: Get Container Registry URL
         id: acr_output
         run: |
-          echo "CONTAINER_REGISTRY=$(terraform output -raw container_registry_login_server)" >> $GITHUB_ENV
-          echo "REGISTRY_UN=$(terraform output -raw container_registry_admin_username)" >> $GITHUB_ENV
-          echo "REGISTRY_PW=$(terraform output -raw container_registry_admin_password)" >> $GITHUB_ENV
+          echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
+          echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
+          echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
         
   build:
     needs: terraform
