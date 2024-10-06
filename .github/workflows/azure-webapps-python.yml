@@ -67,7 +67,7 @@ jobs:
           ls
           chmod +x scripts/build-image.sh
           chmod +x scripts/push-image.sh 
-          chmod +x scripts/deploy.sh
+          chmod +x scripts/deploy.sh 
         
       - name: Build Docker images
         run: |
