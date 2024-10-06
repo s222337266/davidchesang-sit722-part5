@@ -50,6 +50,7 @@ jobs:
       - name: Get Container Registry URL
         id: acr_output
         run: |
+          echo "$(terraform output -raw acr_login_server)"
           echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
           echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
           echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
