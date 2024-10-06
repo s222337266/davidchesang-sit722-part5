@@ -51,9 +51,18 @@ jobs:
         id: acr_output
         run: |
           echo "$(terraform output -raw acr_login_server)"
-          echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
-          echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
-          echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
+          # Fetch the outputs as JSON
+          OUTPUTS=$(terraform output -json)
+
+          # Extract values using jq
+          CONTAINER_REGISTRY=$(echo "${OUTPUTS}" | jq -r '.acr_login_server.value')
+          REGISTRY_UN=$(echo "${OUTPUTS}" | jq -r '.acr_admin_username.value')
+          REGISTRY_PW=$(echo "${OUTPUTS}" | jq -r '.acr_admin_password.value')
+
+          # Write to GITHUB_ENV
+          echo "CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> $GITHUB_ENV
+          echo "REGISTRY_UN=${REGISTRY_UN}" >> $GITHUB_ENV
+          echo "REGISTRY_PW=${REGISTRY_PW}" >> $GITHUB_ENV
         
   build:
     needs: terraform
