@@ -40,22 +40,22 @@ jobs:
           terraform init
     
       # Terraform plan to show what resources will be created
-      - name: 'Terraform Plan'
+      - name: 'Terraform apply'
         run: terraform plan
 
-      # Terraform apply to create resources
-      - name: 'Terraform Apply'
-        run: terraform apply -auto-approve
+      # # Terraform apply to create resources
+      # - name: 'Terraform Apply'
+      #   run: terraform apply -auto-approve
 
-      - name: Get Container Registry URL
-        id: acr_output
-        run: |
-          echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
-          echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
-          echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
+      # - name: Get Container Registry URL
+      #   id: acr_output
+      #   run: |
+      #     echo "CONTAINER_REGISTRY=$(terraform output -raw acr_login_server)" >> $GITHUB_ENV
+      #     echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
+      #     echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
         
   build:
-    needs: terraform
+    # needs: terraform
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
