@@ -60,10 +60,11 @@ jobs:
     steps:
       - name: Set executable permissions for build script
         run: |
+          echo "List directories"
           ls
-          chmod +x scripts/build-image.sh
-          chmod +x scripts/push-image.sh
-          chmod +x scripts/deploy.sh
+          # chmod +x scripts/build-image.sh
+          # chmod +x scripts/push-image.sh
+          # chmod +x scripts/deploy.sh
         
       - name: Build Docker images
         run: |
@@ -71,7 +72,7 @@ jobs:
           ./scripts/push-image.sh
         
   deploy:
-    needs: terraform
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Deploy to Kubernetes
