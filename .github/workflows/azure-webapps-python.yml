@@ -58,6 +58,9 @@ jobs:
     needs: terraform
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
       - name: Set executable permissions for build script
         run: |
           echo "List directories"
@@ -70,11 +73,6 @@ jobs:
         run: |
           ./scripts/build-image.sh
           ./scripts/push-image.sh
-        
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Deploy to Kubernetes
-      run: |
-        ./scripts/deploy.sh
+      - name: Deploy to Kubernetes
+        run: |
+          ./scripts/deploy.sh
