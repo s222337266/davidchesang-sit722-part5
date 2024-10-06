@@ -60,9 +60,10 @@ jobs:
     steps:
       - name: Set executable permissions for build script
         run: |
-          chmod +x ./scripts/build-image.sh
-          chmod +x ./scripts/push-image.sh
-          chmod +x ./scripts/deploy.sh
+          ls
+          chmod +x scripts/build-image.sh
+          chmod +x scripts/push-image.sh
+          chmod +x scripts/deploy.sh
         
       - name: Build Docker images
         run: |
