@@ -1,0 +1,73 @@
+# This workflow will build and push a Python application to an Azure Web App when a commit is pushed to your default branch.
+
+name: Build and deploy Python app to Azure Web App
+
+env:
+  AZURE_WEBAPP_NAME: bookapp  # set this to the name of your Azure Web App
+  PYTHON_VERSION: '3.8'              # set this to the Python version to use
+  VERSION: 1
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+        # Set up Terraform CLI
+      - name: 'Set up Terraform'
+        uses: hashicorp/setup-terraform@v1
+
+      # Authenticate to Azure
+      - name: 'Login to Azure'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Terraform init to initialize the configuration
+      - name: 'Terraform Init'
+        run: |
+          pwd
+          ls -l
+          terraform init
+    
+      # Terraform plan to show what resources will be created
+      - name: 'Terraform Plan'
+        run: terraform plan
+
+      # Terraform apply to create resources
+      - name: 'Terraform Apply'
+        run: terraform apply -auto-approve
+
+      - name: Get Container Registry URL
+        id: acr_output
+        run: |
+          echo "CONTAINER_REGISTRY=$(terraform output -raw container_registry_login_server)" >> $GITHUB_ENV
+          echo "REGISTRY_UN=$(terraform output -raw container_registry_admin_username)" >> $GITHUB_ENV
+          echo "REGISTRY_PW=$(terraform output -raw container_registry_admin_password)" >> $GITHUB_ENV
+        
+  build:
+    needs: terraform
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker images
+      run: |
+        ./scripts/build-image.sh
+        ./scripts/push-image.sh
+        
+  deploy:
+    needs: terraform
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Kubernetes
+      run: |
+        ./scripts/deploy.sh
