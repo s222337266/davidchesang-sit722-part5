@@ -6,7 +6,9 @@ env:
   AZURE_WEBAPP_NAME: bookapp  
   PYTHON_VERSION: '3.8' 
   VERSION: 1
-  REGISTRY_NAME: bookapps222337266.azurecr.io  
+  CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}  
+  REGISTRY_UN: ${{ secrets.REGISTRY_UN }}  
+  REGISTRY_PW: ${{ secrets.REGISTRY_PW }}  
   RESOURCE_GROUP: davidrg1
   AKS_CLUSTER_NAME: bookapp
 on:
@@ -40,7 +42,7 @@ jobs:
           terraform init
     
       # Terraform plan to show what resources will be created
-      - name: 'Terraform apply'
+      - name: 'Terraform'
         run: terraform plan
 
       # # Terraform apply to create resources
@@ -55,21 +57,24 @@ jobs:
       #     echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
         
   build:
-    # needs: terraform
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Build Docker images
-      run: |
-        ./scripts/build-image.sh
-        ./scripts/push-image.sh
-        
-  deploy:
     needs: terraform
     runs-on: ubuntu-latest
     steps:
-    - name: Deploy to Kubernetes
-      run: |
-        ./scripts/deploy.sh
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set executable permissions for build script
+        run: |
+          echo "List directories"
+          ls
+          chmod +x scripts/build-image.sh
+          chmod +x scripts/push-image.sh 
+          chmod +x scripts/deploy.sh 
+        
+      - name: Build Docker images
+        run: |
+          ./scripts/build-image.sh
+          ./scripts/push-image.sh
+      - name: Deploy to Kubernetes
+        run: |
+          ./scripts/deploy.sh
