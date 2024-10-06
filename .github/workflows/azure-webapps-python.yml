@@ -40,7 +40,7 @@ jobs:
           terraform init
     
       # Terraform plan to show what resources will be created
-      - name: 'Terraform apply'
+      - name: 'Terraform'
         run: terraform plan
 
       # # Terraform apply to create resources
@@ -55,16 +55,19 @@ jobs:
       #     echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
         
   build:
-    # needs: terraform
+    needs: terraform
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Build Docker images
-      run: |
-        ./scripts/build-image.sh
-        ./scripts/push-image.sh
+      - name: Set executable permissions for build script
+        run: |
+          chmod +x ./scripts/build-image.sh
+          chmod +x ./scripts/push-image.sh
+          chmod +x ./scripts/deploy.sh
+        
+      - name: Build Docker images
+        run: |
+          ./scripts/build-image.sh
+          ./scripts/push-image.sh
         
   deploy:
     needs: terraform
