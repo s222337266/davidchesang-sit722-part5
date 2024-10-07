@@ -56,7 +56,7 @@ jobs:
       #     echo "REGISTRY_UN=$(terraform output -raw acr_admin_username)" >> $GITHUB_ENV
       #     echo "REGISTRY_PW=$(terraform output -raw acr_admin_password)" >> $GITHUB_ENV
         
-  build:
+  deploy:
     needs: terraform
     runs-on: ubuntu-latest
     steps:
@@ -75,6 +75,11 @@ jobs:
         run: |
           ./scripts/build-image.sh
           ./scripts/push-image.sh
-      - name: Deploy to Kubernetes
-        run: |
-          ./scripts/deploy.sh
+
+      - uses: tale/kubectl-action@v1
+        with:
+          base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+          kubectl-version: v1.24.2
+      
+      - name: Deploy
+        run: ./scripts/deploy.sh
