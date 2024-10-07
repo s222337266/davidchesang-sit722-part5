@@ -6,7 +6,7 @@ env:
   AZURE_WEBAPP_NAME: bookapp  
   PYTHON_VERSION: '3.8' 
   VERSION: ${{ github.sha }}
-  CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}  
+  CONTAINER_REGISTRY: 'bookapps222337266.azurecr.io'
   REGISTRY_UN: ${{ secrets.REGISTRY_UN }}  
   REGISTRY_PW: ${{ secrets.REGISTRY_PW }}  
   RESOURCE_GROUP: davidrg1
