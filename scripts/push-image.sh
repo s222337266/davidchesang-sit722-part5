@@ -6,7 +6,7 @@
     : "$REGISTRY_PW"
 
 echo "Now pushing to azure container registry..."
-echo $CONTAINER_REGISTRY
+echo "Registry (masked): ${CONTAINER_REGISTRY:0:4}..." 
 echo $REGISTRY_PW
 echo "Begin push..."
 
