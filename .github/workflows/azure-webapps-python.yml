@@ -11,6 +11,7 @@ env:
   REGISTRY_PW: ${{ secrets.REGISTRY_PW }}  
   RESOURCE_GROUP: davidrg1
   AKS_CLUSTER_NAME: bookapp
+  DATABASE_URL: postgresql://book_store_80em_user:jsxzVbV5xPGEZlUp76yd9ir1p9hX04pz@dpg-cru0e7qj1k6c73dvausg-a.oregon-postgres.render.com/book_store_80em'
 on:
   push:
     branches: [ "main" ]
